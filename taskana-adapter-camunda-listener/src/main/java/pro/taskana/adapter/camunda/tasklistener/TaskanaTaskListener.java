@@ -19,6 +19,7 @@ import java.util.stream.Collectors;
 import org.camunda.bpm.engine.delegate.DelegateTask;
 import org.camunda.bpm.engine.delegate.TaskListener;
 import org.camunda.bpm.engine.impl.context.Context;
+import org.camunda.bpm.engine.impl.persistence.entity.TaskEntity;
 import org.camunda.bpm.engine.variable.value.TypedValue;
 import org.camunda.bpm.model.bpmn.BpmnModelInstance;
 import org.camunda.bpm.model.bpmn.instance.ExtensionElements;
@@ -63,7 +64,7 @@ public class TaskanaTaskListener implements TaskListener {
   public void notify(DelegateTask delegateTask) {
 
     try (Connection connection =
-        Context.getProcessEngineConfiguration().getDataSource().getConnection()) {
+             Context.getProcessEngineConfiguration().getDataSource().getConnection()) {
 
       if (!gotActivated) {
         gotActivated = true;
@@ -120,7 +121,7 @@ public class TaskanaTaskListener implements TaskListener {
       DelegateTask delegateTask, Connection connection) throws Exception {
 
     if (delegateTask.getEventName().equals("complete")
-        && taskWasCompletedByTaskanaAdapter(delegateTask)) {
+            && taskWasCompletedByTaskanaAdapter(delegateTask)) {
       return;
     }
 
@@ -178,7 +179,7 @@ public class TaskanaTaskListener implements TaskListener {
       Connection connection, DelegateTask delegateTask, String payloadJson) throws Exception {
 
     try (PreparedStatement preparedStatement =
-        connection.prepareStatement(SQL_INSERT_EVENT, Statement.RETURN_GENERATED_KEYS)) {
+             connection.prepareStatement(SQL_INSERT_EVENT, Statement.RETURN_GENERATED_KEYS)) {
 
       Timestamp eventCreationTimestamp = Timestamp.from(Instant.now());
 
@@ -209,14 +210,20 @@ public class TaskanaTaskListener implements TaskListener {
     referencedTask.setOwner(delegateTask.getOwner());
     referencedTask.setTaskDefinitionKey(delegateTask.getTaskDefinitionKey());
     referencedTask.setBusinessProcessId(delegateTask.getProcessInstanceId());
+    referencedTask.setFormUrl(getStrippedFormKey(delegateTask));
     referencedTask.setClassificationKey(
-        getUserTaskExtensionProperty(delegateTask, "taskana.classification-key"));
+        getUserTaskExtensionProperty(delegateTask));
     referencedTask.setDomain(getProcessModelExtensionProperty(delegateTask, "taskana.domain"));
     referencedTask.setWorkbasketKey(getWorkbasketKey(delegateTask));
     referencedTask.setVariables(getProcessVariables(delegateTask));
     String referencedTaskJson = objectMapper.writeValueAsString(referencedTask);
     LOGGER.debug("Exit from getReferencedTaskJson. Returning {}.", referencedTaskJson);
     return referencedTaskJson;
+  }
+
+  private String getStrippedFormKey(DelegateTask delegateTask) {
+    String formKey = ((TaskEntity) delegateTask).getTaskDefinition().getFormKey().toString();
+    return formKey.substring(formKey.lastIndexOf(":") + 1);
   }
 
   private String getProcessVariables(DelegateTask delegateTask) {
@@ -227,10 +234,10 @@ public class TaskanaTaskListener implements TaskListener {
         getProcessModelExtensionProperty(delegateTask, "taskana-attributes");
 
     if (processVariablesConcatenated != null) {
-      List<String> processVariablenames =
+      List<String> processVariableNames =
           splitProcessVariableNamesString(processVariablesConcatenated);
 
-      processVariablenames.forEach(
+      processVariableNames.forEach(
           nameOfProcessVariableToAdd ->
               addToProcessVariablesBuilder(
                   delegateTask, objectMapper, processVariablesBuilder, nameOfProcessVariableToAdd));
@@ -254,9 +261,9 @@ public class TaskanaTaskListener implements TaskListener {
       DelegateTask delegateTask,
       ObjectMapper objectMapper,
       StringBuilder processVariablesBuilder,
-      String nameOfprocessVariableToAdd) {
+      String nameOfProcessVariableToAdd) {
 
-    TypedValue processVariable = delegateTask.getVariableTyped(nameOfprocessVariableToAdd);
+    TypedValue processVariable = delegateTask.getVariableTyped(nameOfProcessVariableToAdd);
 
     if (processVariable != null) {
 
@@ -269,7 +276,7 @@ public class TaskanaTaskListener implements TaskListener {
 
         processVariablesBuilder
             .append("\"")
-            .append(nameOfprocessVariableToAdd)
+            .append(nameOfProcessVariableToAdd)
             .append("\":")
             .append(variableValueDtoJson)
             .append(",");
@@ -357,7 +364,7 @@ public class TaskanaTaskListener implements TaskListener {
     return propertyValue;
   }
 
-  private String getUserTaskExtensionProperty(DelegateTask delegateTask, String propertyKey) {
+  private String getUserTaskExtensionProperty(DelegateTask delegateTask) {
 
     String propertyValue = null;
 
@@ -372,7 +379,8 @@ public class TaskanaTaskListener implements TaskListener {
 
       List<CamundaProperty> userTaskExtensionProperties =
           camundaProperties.getCamundaProperties().stream()
-              .filter(camundaProperty -> camundaProperty.getCamundaName().equals(propertyKey))
+              .filter(camundaProperty -> camundaProperty.getCamundaName().equals(
+                  "taskana.classification-key"))
               .collect(Collectors.toList());
 
       if (userTaskExtensionProperties.isEmpty()) {
@@ -390,8 +398,8 @@ public class TaskanaTaskListener implements TaskListener {
       return null;
     } else {
       return DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-          .withZone(ZoneId.systemDefault())
-          .format(date.toInstant());
+                 .withZone(ZoneId.systemDefault())
+                 .format(date.toInstant());
     }
   }
 }

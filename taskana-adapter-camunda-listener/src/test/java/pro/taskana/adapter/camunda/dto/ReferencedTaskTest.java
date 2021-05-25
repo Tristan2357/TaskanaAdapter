@@ -113,8 +113,8 @@ public class ReferencedTaskTest {
   @Test
   void should_returnSystemUrl_when_SystemUrlWasSet() {
     ReferencedTask referencedTask = new ReferencedTask();
-    referencedTask.setsystemUrl(theValue);
-    assertThat(theValue).isEqualTo(referencedTask.getsystemUrl());
+    referencedTask.setSystemUrl(theValue);
+    assertThat(theValue).isEqualTo(referencedTask.getSystemUrl());
   }
 
   @Test

@@ -66,6 +66,7 @@ public class TaskInformationMapper {
     callbackInfo.put(Task.CALLBACK_STATE, CallbackState.CALLBACK_PROCESSING_REQUIRED.name());
     callbackInfo.put(TaskanaSystemConnectorImpl.REFERENCED_TASK_ID, referencedTask.getId());
     callbackInfo.put(TaskanaSystemConnectorImpl.SYSTEM_URL, referencedTask.getSystemUrl());
+    callbackInfo.put(TaskanaSystemConnectorImpl.FORM_URL, referencedTask.getFormUrl());
     taskanaTask.setCallbackInfo(callbackInfo);
     taskanaTask.setExternalId(referencedTask.getId());
 
