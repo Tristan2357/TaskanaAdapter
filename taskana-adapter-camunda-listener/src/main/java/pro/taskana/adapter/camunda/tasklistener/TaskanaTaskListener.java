@@ -210,7 +210,7 @@ public class TaskanaTaskListener implements TaskListener {
     referencedTask.setOwner(delegateTask.getOwner());
     referencedTask.setTaskDefinitionKey(delegateTask.getTaskDefinitionKey());
     referencedTask.setBusinessProcessId(delegateTask.getProcessInstanceId());
-    referencedTask.setFormUrl(getStrippedFormKey(delegateTask));
+    referencedTask.setFormIdentifier(getFormIdentifier(delegateTask));
     referencedTask.setClassificationKey(
         getUserTaskExtensionProperty(delegateTask));
     referencedTask.setDomain(getProcessModelExtensionProperty(delegateTask, "taskana.domain"));
@@ -221,9 +221,9 @@ public class TaskanaTaskListener implements TaskListener {
     return referencedTaskJson;
   }
 
-  private String getStrippedFormKey(DelegateTask delegateTask) {
+  private String getFormIdentifier(DelegateTask delegateTask) {
     String formKey = ((TaskEntity) delegateTask).getTaskDefinition().getFormKey().toString();
-    return formKey.substring(formKey.lastIndexOf(":") + 1);
+    return "/../" + formKey.substring(formKey.lastIndexOf(":") + 1);
   }
 
   private String getProcessVariables(DelegateTask delegateTask) {

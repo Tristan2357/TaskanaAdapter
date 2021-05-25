@@ -17,7 +17,7 @@ public class ReferencedTask {
   private String priority;
   private String suspended;
   private String systemUrl;
-  private String formUrl;
+  private String formIdentifier;
   private String taskDefinitionKey;
   private String businessProcessId;
   private String variables;
@@ -131,12 +131,12 @@ public class ReferencedTask {
     this.systemUrl = systemUrl;
   }
 
-  public String getFormUrl() {
-    return formUrl;
+  public String getFormIdentifier() {
+    return formIdentifier;
   }
 
-  public void setFormUrl(String formUrl) {
-    this.formUrl = formUrl;
+  public void setFormIdentifier(String formIdentifier) {
+    this.formIdentifier = formIdentifier;
   }
 
   public String getTaskDefinitionKey() {
