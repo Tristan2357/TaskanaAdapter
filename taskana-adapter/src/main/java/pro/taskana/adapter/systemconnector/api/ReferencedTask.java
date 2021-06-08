@@ -18,6 +18,7 @@ public class ReferencedTask {
   private String suspended;
   private String systemUrl;
   private String formIdentifier;
+  private String formVariables;
   private String taskDefinitionKey;
   private String businessProcessId;
   private String variables;
@@ -187,61 +188,12 @@ public class ReferencedTask {
     this.workbasketKey = workbasketKey;
   }
 
-  @Override
-  public int hashCode() {
-    return Objects.hash(
-        id,
-        outboxEventId,
-        outboxEventType,
-        name,
-        assignee,
-        created,
-        due,
-        description,
-        owner,
-        priority,
-        suspended,
-        systemUrl,
-        taskDefinitionKey,
-        businessProcessId,
-        variables,
-        taskState,
-        domain,
-        classificationKey,
-        workbasketKey);
+  public String getFormVariables() {
+    return formVariables;
   }
 
-  @Override
-  public boolean equals(Object obj) {
-    if (this == obj) {
-      return true;
-    }
-    if (obj == null) {
-      return false;
-    }
-    if (getClass() != obj.getClass()) {
-      return false;
-    }
-    ReferencedTask other = (ReferencedTask) obj;
-    return Objects.equals(id, other.id)
-        && Objects.equals(outboxEventId, other.outboxEventId)
-        && Objects.equals(outboxEventType, other.outboxEventType)
-        && Objects.equals(name, other.name)
-        && Objects.equals(assignee, other.assignee)
-        && Objects.equals(created, other.created)
-        && Objects.equals(due, other.due)
-        && Objects.equals(description, other.description)
-        && Objects.equals(owner, other.owner)
-        && Objects.equals(priority, other.priority)
-        && Objects.equals(suspended, other.suspended)
-        && Objects.equals(systemUrl, other.systemUrl)
-        && Objects.equals(taskDefinitionKey, other.taskDefinitionKey)
-        && Objects.equals(businessProcessId, other.businessProcessId)
-        && Objects.equals(variables, other.variables)
-        && Objects.equals(taskState, other.taskState)
-        && Objects.equals(domain, other.domain)
-        && Objects.equals(classificationKey, other.classificationKey)
-        && Objects.equals(workbasketKey, other.workbasketKey);
+  public void setFormVariables(String formVariables) {
+    this.formVariables = formVariables;
   }
 
   @Override
@@ -270,6 +222,8 @@ public class ReferencedTask {
         + suspended
         + ", systemUrl="
         + systemUrl
+        + ", formIdentifier="
+        + formIdentifier
         + ", taskDefinitionKey="
         + taskDefinitionKey
         + ", businessProcessId="
@@ -286,4 +240,47 @@ public class ReferencedTask {
         + workbasketKey
         + "]";
   }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (this == obj) {
+      return true;
+    }
+    if (obj == null) {
+      return false;
+    }
+    if (getClass() != obj.getClass()) {
+      return false;
+    }
+    ReferencedTask other = (ReferencedTask) obj;
+    return Objects.equals(id, other.id)
+        && Objects.equals(outboxEventId, other.outboxEventId)
+        && Objects.equals(outboxEventType, other.outboxEventType)
+        && Objects.equals(name, other.name)
+        && Objects.equals(assignee, other.assignee)
+        && Objects.equals(created, other.created)
+        && Objects.equals(due, other.due)
+        && Objects.equals(description, other.description)
+        && Objects.equals(owner, other.owner)
+        && Objects.equals(priority, other.priority)
+        && Objects.equals(suspended, other.suspended)
+        && Objects.equals(systemUrl, other.systemUrl)
+        && Objects.equals(formIdentifier, other.formIdentifier)
+        && Objects.equals(taskDefinitionKey, other.taskDefinitionKey)
+        && Objects.equals(businessProcessId, other.businessProcessId)
+        && Objects.equals(variables, other.variables)
+        && Objects.equals(taskState, other.taskState)
+        && Objects.equals(domain, other.domain)
+        && Objects.equals(classificationKey, other.classificationKey)
+        && Objects.equals(workbasketKey, other.workbasketKey);
+  }
+
+  @Override
+  public int hashCode() {
+    return Objects
+        .hash(id, outboxEventId, outboxEventType, name, assignee, created, due, description, owner,
+            priority, suspended, systemUrl, formIdentifier, taskDefinitionKey, businessProcessId,
+            variables, taskState, domain, classificationKey, workbasketKey);
+  }
+
 }

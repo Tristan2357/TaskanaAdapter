@@ -64,7 +64,7 @@ public class TaskanaTaskListener implements TaskListener {
   public void notify(DelegateTask delegateTask) {
 
     try (Connection connection =
-             Context.getProcessEngineConfiguration().getDataSource().getConnection()) {
+        Context.getProcessEngineConfiguration().getDataSource().getConnection()) {
 
       if (!gotActivated) {
         gotActivated = true;
@@ -121,7 +121,7 @@ public class TaskanaTaskListener implements TaskListener {
       DelegateTask delegateTask, Connection connection) throws Exception {
 
     if (delegateTask.getEventName().equals("complete")
-            && taskWasCompletedByTaskanaAdapter(delegateTask)) {
+        && taskWasCompletedByTaskanaAdapter(delegateTask)) {
       return;
     }
 
@@ -179,7 +179,7 @@ public class TaskanaTaskListener implements TaskListener {
       Connection connection, DelegateTask delegateTask, String payloadJson) throws Exception {
 
     try (PreparedStatement preparedStatement =
-             connection.prepareStatement(SQL_INSERT_EVENT, Statement.RETURN_GENERATED_KEYS)) {
+        connection.prepareStatement(SQL_INSERT_EVENT, Statement.RETURN_GENERATED_KEYS)) {
 
       Timestamp eventCreationTimestamp = Timestamp.from(Instant.now());
 
@@ -211,14 +211,19 @@ public class TaskanaTaskListener implements TaskListener {
     referencedTask.setTaskDefinitionKey(delegateTask.getTaskDefinitionKey());
     referencedTask.setBusinessProcessId(delegateTask.getProcessInstanceId());
     referencedTask.setFormIdentifier(getFormIdentifier(delegateTask));
-    referencedTask.setClassificationKey(
-        getUserTaskExtensionProperty(delegateTask));
+    referencedTask.setFormVariables(getFormVariables(delegateTask));
+    referencedTask.setClassificationKey(getUserTaskExtensionProperty(delegateTask));
     referencedTask.setDomain(getProcessModelExtensionProperty(delegateTask, "taskana.domain"));
     referencedTask.setWorkbasketKey(getWorkbasketKey(delegateTask));
     referencedTask.setVariables(getProcessVariables(delegateTask));
     String referencedTaskJson = objectMapper.writeValueAsString(referencedTask);
     LOGGER.debug("Exit from getReferencedTaskJson. Returning {}.", referencedTaskJson);
     return referencedTaskJson;
+  }
+
+  private String getFormVariables(DelegateTask delegateTask) throws JsonProcessingException {
+    Map<String, Object> variableMap = delegateTask.getVariables();
+    return objectMapper.writerWithDefaultPrettyPrinter().writeValueAsString(variableMap);
   }
 
   private String getFormIdentifier(DelegateTask delegateTask) {
@@ -379,8 +384,9 @@ public class TaskanaTaskListener implements TaskListener {
 
       List<CamundaProperty> userTaskExtensionProperties =
           camundaProperties.getCamundaProperties().stream()
-              .filter(camundaProperty -> camundaProperty.getCamundaName().equals(
-                  "taskana.classification-key"))
+              .filter(
+                  camundaProperty ->
+                      camundaProperty.getCamundaName().equals("taskana.classification-key"))
               .collect(Collectors.toList());
 
       if (userTaskExtensionProperties.isEmpty()) {
@@ -398,8 +404,8 @@ public class TaskanaTaskListener implements TaskListener {
       return null;
     } else {
       return DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss.SSSZ")
-                 .withZone(ZoneId.systemDefault())
-                 .format(date.toInstant());
+          .withZone(ZoneId.systemDefault())
+          .format(date.toInstant());
     }
   }
 }

@@ -36,6 +36,7 @@ public class TaskanaSystemConnectorImpl implements TaskanaConnector {
   static final String REFERENCED_TASK_VARIABLES = "referenced_task_variables";
   static final String SYSTEM_URL = "system_url";
   static final String FORM_IDENTIFIER = "form_identifier";
+  static final String FORM_VARIABLES = "form_variables";
   private static final String TASK_STATE_CANCELLED = "CANCELLED";
   private static final String TASK_STATE_TERMINATED = "TERMINATED";
   private static final Logger LOGGER = LoggerFactory.getLogger(TaskanaSystemConnectorImpl.class);

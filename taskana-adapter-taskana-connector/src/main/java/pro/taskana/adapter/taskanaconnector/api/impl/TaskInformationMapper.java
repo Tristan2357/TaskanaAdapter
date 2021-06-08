@@ -47,7 +47,8 @@ public class TaskInformationMapper {
   @Value("${taskana.adapter.mapping.default.objectreference.value:DEFAULT_VALUE}")
   private String defaultValue;
 
-  @Autowired private TaskService taskService;
+  @Autowired
+  private TaskService taskService;
 
   public Task convertToTaskanaTask(ReferencedTask referencedTask) {
 
@@ -65,9 +66,13 @@ public class TaskInformationMapper {
     Map<String, String> callbackInfo = new HashMap<>();
     callbackInfo.put(Task.CALLBACK_STATE, CallbackState.CALLBACK_PROCESSING_REQUIRED.name());
     callbackInfo.put(TaskanaSystemConnectorImpl.REFERENCED_TASK_ID, referencedTask.getId());
+
     callbackInfo.put(TaskanaSystemConnectorImpl.SYSTEM_URL, referencedTask.getSystemUrl());
-    callbackInfo.put(TaskanaSystemConnectorImpl.FORM_IDENTIFIER, referencedTask.getFormIdentifier());
+    callbackInfo
+        .put(TaskanaSystemConnectorImpl.FORM_IDENTIFIER, referencedTask.getFormIdentifier());
+    callbackInfo.put(TaskanaSystemConnectorImpl.FORM_VARIABLES, referencedTask.getFormVariables());
     taskanaTask.setCallbackInfo(callbackInfo);
+
     taskanaTask.setExternalId(referencedTask.getId());
 
     Map<String, String> customAttributes =

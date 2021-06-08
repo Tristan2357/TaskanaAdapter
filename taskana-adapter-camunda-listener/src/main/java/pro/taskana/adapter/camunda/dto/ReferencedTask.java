@@ -2,7 +2,9 @@ package pro.taskana.adapter.camunda.dto;
 
 import java.util.Objects;
 
-/** POJO that represents a task in the external system. */
+/**
+ * POJO that represents a task in the external system.
+ */
 public class ReferencedTask {
 
   private String id;
@@ -18,6 +20,7 @@ public class ReferencedTask {
   private String suspended;
   private String systemUrl;
   private String formIdentifier;
+  private String formVariables;
   private String taskDefinitionKey;
   private String businessProcessId;
   private String variables;
@@ -187,28 +190,20 @@ public class ReferencedTask {
     this.workbasketKey = workbasketKey;
   }
 
+  public String getFormVariables() {
+    return formVariables;
+  }
+
+  public void setFormVariables(String formVariables) {
+    this.formVariables = formVariables;
+  }
+
   @Override
   public int hashCode() {
-    return Objects.hash(
-        id,
-        outboxEventId,
-        outboxEventType,
-        name,
-        assignee,
-        created,
-        due,
-        description,
-        owner,
-        priority,
-        suspended,
-        systemUrl,
-        taskDefinitionKey,
-        businessProcessId,
-        variables,
-        taskState,
-        domain,
-        classificationKey,
-        workbasketKey);
+    return Objects
+        .hash(id, outboxEventId, outboxEventType, name, assignee, created, due, description, owner,
+            priority, suspended, systemUrl, formIdentifier, formVariables, taskDefinitionKey,
+            businessProcessId, variables, taskState, domain, classificationKey, workbasketKey);
   }
 
   @Override
@@ -235,6 +230,8 @@ public class ReferencedTask {
         && Objects.equals(priority, other.priority)
         && Objects.equals(suspended, other.suspended)
         && Objects.equals(systemUrl, other.systemUrl)
+        && Objects.equals(formIdentifier, other.formIdentifier)
+        && Objects.equals(formVariables, other.formVariables)
         && Objects.equals(taskDefinitionKey, other.taskDefinitionKey)
         && Objects.equals(businessProcessId, other.businessProcessId)
         && Objects.equals(variables, other.variables)
@@ -270,6 +267,10 @@ public class ReferencedTask {
         + suspended
         + ", systemUrl="
         + systemUrl
+        + ", formIdentifier="
+        + formIdentifier
+        + ", formVariables="
+        + formVariables
         + ", taskDefinitionKey="
         + taskDefinitionKey
         + ", businessProcessId="
@@ -286,4 +287,5 @@ public class ReferencedTask {
         + workbasketKey
         + "]";
   }
+
 }
